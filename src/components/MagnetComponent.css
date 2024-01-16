@@ -1,0 +1,15 @@
+/* MagnetComponent.css */
+.magnet {
+
+    filter: drop-shadow(40px 0 0 white) 
+    drop-shadow(0 40px 0 white)
+    drop-shadow(-40px 0 0 white) 
+    drop-shadow(0 -40px 0 white);
+    filter: drop-shadow(80px 0 0 gray ) 
+    drop-shadow(0 80px 0 gray)
+    drop-shadow(-80px 0 0 gray) 
+    drop-shadow(0 -80px 0 gray);
+  }
+  
+  /* Add any other styling needed for the magnet component */
+  
