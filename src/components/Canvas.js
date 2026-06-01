@@ -145,6 +145,8 @@ function Canvas({ magnets, notes, onDrop, onMagnetMove, onDeleteMagnet, onNoteEx
             else noteRefsMap.current.delete(note.id);
           }}
           style={{
+            width: 2000,
+            height: 200,
             left: `${note.x * 100}%`,
             '--tilt': `${note.tilt}deg`,
           }}
