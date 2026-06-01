@@ -1,0 +1,73 @@
+.right-sidebar {
+  width: 200px;
+  min-width: 200px;
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  gap: 12px;
+  border-left: 1px solid #333;
+}
+
+.right-sidebar-title {
+  color: #e0e0e0;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.right-sidebar-desc {
+  color: #666;
+  font-size: 11px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.note-input {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 13px;
+  padding: 10px;
+  resize: vertical;
+  font-family: inherit;
+  outline: none;
+  line-height: 1.55;
+  transition: border-color 0.15s;
+}
+
+.note-input:focus {
+  border-color: #ca8a04;
+}
+
+.note-input::placeholder {
+  color: #484848;
+}
+
+.note-submit {
+  background: #ca8a04;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.note-submit:hover:not(:disabled) {
+  background: #b45309;
+}
+
+.note-submit:active:not(:disabled) {
+  background: #92400e;
+}
+
+.note-submit:disabled {
+  background: #2a2a2a;
+  color: #484848;
+  cursor: not-allowed;
+}
