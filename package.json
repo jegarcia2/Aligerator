@@ -1,6 +1,8 @@
 {
   "name": "aligerator",
   "version": "0.1.0",
+  "description": "An interactive note-taking application with draggable magnets and falling notes that can be pinned on a canvas.",
+  "author": "Jose Garcia",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",

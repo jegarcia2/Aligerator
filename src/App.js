@@ -7,6 +7,9 @@ import RightSidebar from './components/RightSidebar';
 let nextId = 0;
 
 function App() {
+  // images: Uploaded image sources for magnet thumbnails
+  // magnets: Active magnets on canvas with position (x, y) and image source
+  // notes: Falling notes with text, position, and tilt angle
   const [images, setImages] = useState([]);
   const [magnets, setMagnets] = useState([]);
   const [notes, setNotes] = useState([]);

@@ -1,70 +1,189 @@
-# Getting Started with Create React App
+# Aligerator 🧲
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An interactive, playful note-taking application where you can organize your thoughts by dragging "magnets" around a canvas to pin falling notes in place.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+Aligerator is a React-based web application that explores creative interaction patterns. Instead of traditional note organization, it uses a physics-inspired metaphor where:
+- **Magnets** are draggable image elements that users upload
+- **Notes** are text snippets that fall down the canvas and disappear on their own
+- When magnets and notes overlap, the notes become "pinned" and stop falling
 
-### `npm start`
+This project demonstrates state management, event handling, and DOM manipulation in React, along with CSS animations and drag-and-drop interactions.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+✨ **Core Functionality**
+- Upload images to create draggable magnets
+- Type notes and drop them onto the canvas
+- Drag magnets around the canvas to reposition them
+- Notes automatically fall off the screen (with animation)
+- Magnets pin overlapping notes in place, pausing their animation
+- Delete magnets with an X button
+- Real-time magnet position updates and smooth animations
 
-### `npm test`
+🎨 **User Experience**
+- Responsive three-panel layout (left sidebar, main canvas, right sidebar)
+- Visual feedback when grabbing magnets (scale up, enhanced shadow)
+- Smooth drag rotation based on mouse velocity
+- Falling notes with random tilt for organic appearance
+- Intuitive keyboard shortcuts (Enter to submit notes, Shift+Enter for newlines)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting Started
 
-### `npm run build`
+### Prerequisites
+- Node.js 14.0 or higher
+- npm or yarn
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+# Clone the repository
+git clone <repository-url>
+cd aligerator
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Install dependencies
+npm install
 
-### `npm run eject`
+# Start the development server
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The app will open at [http://localhost:3000](http://localhost:3000) and automatically reload as you make changes.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Build for Production
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm run build
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+This creates an optimized production build in the `build` folder.
 
-## Learn More
+## Project Structure
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+src/
+├── App.js                 # Root component - manages application state
+├── App.css                # Application-level styles
+├── index.js               # React entry point
+├── index.css              # Global styles
+│
+└── components/
+    ├── Canvas.js          # Main interaction canvas (magnets + falling notes)
+    ├── Canvas.css         # Canvas-specific styling
+    ├── Sidebar.js         # Left sidebar for uploading magnets
+    ├── Sidebar.css        # Sidebar styling
+    ├── RightSidebar.js    # Right sidebar for creating notes
+    └── RightSidebar.css   # Right sidebar styling
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Technical Highlights
 
-### Code Splitting
+### State Management
+The app uses React hooks (`useState`, `useCallback`) to manage:
+- **images**: Uploaded images that become magnets
+- **magnets**: Active magnet elements with position (x, y)
+- **notes**: Falling notes with text, position, and tilt
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Complex Interaction: Note Pinning System
+One of the most interesting features is the pinning mechanism:
 
-### Analyzing the Bundle Size
+```javascript
+// Each note tracks which magnets are holding it
+pinnedByRef.current: Map<noteId, Set<magnetId>>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+When a magnet is dragged and released:
+1. Check collision between magnet bounds and all note bounds
+2. Add magnet ID to the note's pinning set
+3. Pause the note's falling animation if any magnet is pinning it
+4. Resume animation when all pinning magnets are removed
 
-### Making a Progressive Web App
+This system allows multiple magnets to pin a single note, and notes to be released when magnets move away.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Drag-and-Drop
+- **Images to Canvas**: Uses HTML5 dataTransfer API to serialize image data
+- **Magnets on Canvas**: Custom mouse event handling with position tracking and smooth transforms
+- **Drag Rotation**: Real-time velocity calculation creates natural rotation feedback
 
-### Advanced Configuration
+### Animation Techniques
+- CSS `@keyframes` for falling notes (custom `--tilt` CSS variable for per-instance rotation)
+- Smooth easing functions for magnet transforms
+- `requestAnimationFrame` for collision detection timing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Key Implementation Details
 
-### Deployment
+### Why Refs?
+The app uses refs (`useRef`) to manage:
+- Canvas and magnet DOM elements (for position/collision detection)
+- Drag state and offset tracking (for smooth drag interaction)
+- Pinning relationships (for efficient state updates across renders)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+This avoids re-rendering the entire canvas on every mouse move, keeping interactions performant.
 
-### `npm run build` fails to minify
+### Canvas Coordinate System
+All positions are stored in absolute pixel coordinates relative to the canvas:
+- Notes use percentage-based horizontal positioning (`left: ${note.x * 100}%`)
+- Magnets use absolute coordinates with CSS `transform: translate(-50%, -50%)` for centering
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Animation Cleanup
+When a note's falling animation ends, the component:
+1. Clears its entry from the pinning map
+2. Triggers `onNoteExpired` callback
+3. React removes the element from the DOM
+
+## Development Workflow
+
+### Available Scripts
+
+- `npm start`: Run development server with hot reload
+- `npm build`: Create production-optimized build
+- `npm test`: Run the test suite (if configured)
+
+### Making Changes
+
+1. Edit component files in `src/`
+2. Styles are co-located with components (`.css` files next to `.js` files)
+3. Changes automatically reload in the browser
+4. Console shows any lint or runtime errors
+
+### Code Style
+The project follows standard React conventions:
+- Functional components with hooks
+- Props passed down from parent to child
+- Callbacks for child-to-parent communication
+- CSS modules co-located with components for organization
+
+## Learning Outcomes
+
+This project demonstrates:
+- **React fundamentals**: Hooks (useState, useCallback, useRef, useEffect), component composition
+- **Advanced interaction**: Drag-and-drop, collision detection, animation state management
+- **DOM manipulation**: getBoundingClientRect, ref tracking, programmatic style updates
+- **Performance optimization**: Avoiding unnecessary re-renders with refs and callbacks
+- **CSS animation**: @keyframes, custom properties (CSS variables), transforms, transitions
+
+## Possible Extensions
+
+Ideas for future enhancements:
+- Save and load canvas state to localStorage or a backend
+- Magnet customization (colors, sizes, custom images)
+- Note categories with different falling speeds
+- Multi-user collaboration with WebSockets
+- Mobile touch support for tablet use
+- Undo/redo functionality
+- Sound effects for interactions
+
+## Dependencies
+
+- **react** (18.2.0): UI library
+- **react-dom** (18.2.0): React rendering for web
+- **react-scripts** (5.0.1): Build and development server tools
+
+## License
+
+This project is open source and available for educational and portfolio purposes.
+
+---
+
+**Questions or feedback?** Feel free to explore the code—it's written to be readable and well-structured for learning!

@@ -15,6 +15,7 @@ const FILTER_GRABBED = `
   drop-shadow(8px 22px 28px rgba(0,0,0,0.7))
 `.trim();
 
+// Check if two bounding rectangles overlap using AABB (Axis-Aligned Bounding Box) collision detection
 function rectsOverlap(a, b) {
   return !(a.right < b.left || b.right < a.left || a.bottom < b.top || b.bottom < a.top);
 }
@@ -29,9 +30,13 @@ function Canvas({ magnets, notes, onDrop, onMagnetMove, onDeleteMagnet, onNoteEx
 
   const noteRefsMap = useRef(new Map());
   const magnetRefsMap = useRef(new Map());
-  // noteId → Set<magnetId>: which magnets are currently holding each note
+  // Map to track which magnets are currently "pinning" each note.
+  // When a note has pinners, its falling animation is paused.
+  // Structure: noteId → Set<magnetId>
   const pinnedByRef = useRef(new Map());
 
+  // Control note animation based on pinning state.
+  // A note stops falling when at least one magnet is pinning it.
   const applyPinState = (noteId) => {
     const noteEl = noteRefsMap.current.get(noteId);
     if (!noteEl) return;
@@ -71,6 +76,8 @@ function Canvas({ magnets, notes, onDrop, onMagnetMove, onDeleteMagnet, onNoteEx
       const y = e.clientY - rect.top - dragOffset.current.y;
       onMagnetMove(draggingId.current, x, y);
 
+      // Calculate velocity-based rotation for natural drag feedback.
+      // Clamp rotation between -18 and 18 degrees and ease into target.
       const dx = lastMouseX.current !== null ? e.clientX - lastMouseX.current : 0;
       lastMouseX.current = e.clientX;
       const target = Math.max(-18, Math.min(18, dx * 1.5));
@@ -84,7 +91,8 @@ function Canvas({ magnets, notes, onDrop, onMagnetMove, onDeleteMagnet, onNoteEx
       setActiveDragId(null);
       setDragRotation(0);
       if (id !== null) {
-        // Wait one frame for React to flush the final magnet position to DOM
+        // Wait one frame for React to flush the final magnet position to DOM before checking collisions.
+        // This ensures getBoundingClientRect returns the updated position.
         requestAnimationFrame(() => dropMagnetOnNotes(id));
       }
     };
